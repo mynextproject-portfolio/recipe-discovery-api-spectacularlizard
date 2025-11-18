@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Query
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 app = FastAPI()
 
@@ -115,6 +115,22 @@ def ping():
 def get_all_recipes():
     """Get all recipes from the in-memory storage"""
     return list(recipes_db.values())
+
+@app.get("/recipes/search")
+def search_recipes(q: Optional[str] = Query(None)):
+    """Search recipes by title using substring matching (case-insensitive)"""
+    # Return empty array if no query parameter provided
+    if q is None or q.strip() == "":
+        return []
+    
+    # Search for recipes with matching titles (case-insensitive)
+    query_lower = q.lower()
+    matching_recipes = [
+        recipe for recipe in recipes_db.values()
+        if query_lower in recipe["title"].lower()
+    ]
+    
+    return matching_recipes
 
 @app.get("/recipes/{recipe_id}")
 def get_recipe_by_id(recipe_id: int):
