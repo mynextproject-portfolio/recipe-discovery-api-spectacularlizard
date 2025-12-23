@@ -8,8 +8,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Copy application code and tests (tests are kept so external eval can run pytest)
 COPY main.py .
+COPY tests ./tests
 
 # Expose port 80 for HTTP traffic
 EXPOSE 80
