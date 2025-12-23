@@ -4,10 +4,11 @@ FROM python:3.12-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Install FastAPI and Uvicorn
-RUN pip install fastapi uvicorn
+# Install dependencies from requirements to keep versions in sync
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the FastAPI app into the container
+# Copy application code
 COPY main.py .
 
 # Expose port 80 for HTTP traffic
